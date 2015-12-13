@@ -36,14 +36,34 @@ const Slice = React.createClass({
 const App = React.createClass ({
 	render: function(){
 		const message = "hello world";
-
+    const pageW = document.body.offsetWidth;
 		return(
 			<StaggeredMotion
-        defaultStyles={[{x: 0}, {x: 10}, {x: 20}]}
-        styles={prevStyles => prevStyles.map((_, i) => {
-          return i === 0
-            ? {x: 40}
-            : prevStyles[i - 1];
+        defaultStyles={[
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)},
+          {x: -(pageW)}
+        ]}
+        styles={prevStyles => prevStyles.map((_, i) => { 
+          // don't launch until last panel is 1/4 in
+          var threshold = -(pageW*0.75);
+          var readyToLaunch = false;
+          if(i===0 || (i!==0 && prevStyles[i-1].x > threshold)){
+            readyToLaunch = true;
+             // console.log(i + ' inside ' + prevStyles[i-1].x);
+             // destination={x: prevStyles[i-1].x};
+          }
+          return readyToLaunch ? {x: spring(0, [100,12])} : prevStyles[i];
         })}>
         {interpolatedStyles =>
           <div>
